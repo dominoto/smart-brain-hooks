@@ -12,7 +12,7 @@ import './App.css';
 
 //You must add your own API key here from Clarifai.
 const app = new Clarifai.App({
- apiKey: 'YOUR API KEY HERE'
+ apiKey: 'a35a2916dbaf4b9aaee200d216b168eb'
 });
 
 const particlesOptions = {
