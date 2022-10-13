@@ -1,6 +1,9 @@
 {
   "name": "facerecognitionbrain",
   "version": "0.1.0",
+  "engines": {
+    "node": "17.x"
+  },
   "private": true,
   "dependencies": {
     "clarifai": "^2.9.1",
