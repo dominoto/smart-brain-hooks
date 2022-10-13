@@ -9,10 +9,12 @@
     "react-particles-js": "^3.3.0",
     "react-scripts": "^4.0.3",
     "react-tilt": "^0.1.4",
+    "serve": "^14.0.1",
     "tachyons": "^4.12.0"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
+    //  "start": "react-scripts --openssl-legacy-provider start",
+    "start": "serve -s build", // using serve because of potential problems with deployment on heroku
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
