@@ -2,16 +2,17 @@
   "name": "facerecognitionbrain",
   "version": "0.1.0",
   "engines": {
-    "node": "17.x"
+    "node": "18.11.0",
+    "npm": "8.19.2"
   },
   "private": true,
   "dependencies": {
     "clarifai": "^2.9.1",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-particles-js": "^3.6.0",
-    "react-scripts": "^4.0.3",
-    "react-tilt": "^0.1.4",
+    "react": "^18.x",
+    "react-dom": "^18.x",
+    "react-scripts": "^5.0.1",
+    "react-parallax-tilt": "^1.7.67",
+    "particles-bg": "^2.5.5",
     "serve": "^14.0.1",
     "tachyons": "^4.12.0"
   },
