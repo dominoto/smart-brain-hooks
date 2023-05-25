@@ -8,11 +8,11 @@
   "private": true,
   "dependencies": {
     "clarifai": "^2.9.1",
+    "particles-bg": "^2.5.5",
     "react": "^18.x",
     "react-dom": "^18.x",
-    "react-scripts": "^5.0.1",
     "react-parallax-tilt": "^1.7.67",
-    "particles-bg": "^2.5.5",
+    "react-scripts": "^5.0.1",
     "serve": "^14.0.1",
     "tachyons": "^4.12.0"
   },
@@ -33,5 +33,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.2.5"
   }
 }
