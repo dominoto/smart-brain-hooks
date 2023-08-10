@@ -95,7 +95,7 @@ class App extends Component {
         {
           data: {
             image: {
-              url: imageUrl,
+              url: this.state.imageUrl,
             },
           },
         },
