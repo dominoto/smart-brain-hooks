@@ -24,9 +24,9 @@ const initialState = {
   },
   MODEL_ID: "face-detection",
   MODEL_VERSION_ID: "6dc7e46bc9124c5c8824be4822abe105",
-  PAT: process.env.PAT,
-  USER_ID: process.env.USER_ID,
-  APP_ID: process.env.APP_ID,
+  // PAT: process.env.PAT,
+  // USER_ID: process.env.USER_ID,
+  // APP_ID: process.env.APP_ID,
 };
 
 class App extends Component {
@@ -75,10 +75,10 @@ class App extends Component {
     // Data for Clarifai REST endpoint
     const raw = JSON.stringify({
       user_app_id: {
-        // user_id: process.env.USER_ID,
-        // app_id: process.env.APP_ID,
-        user_id: this.state.USER_ID,
-        app_id: this.state.APP_ID,
+        user_id: process.env.USER_ID,
+        app_id: process.env.APP_ID,
+        // user_id: this.state.USER_ID,
+        // app_id: this.state.APP_ID,
       },
       inputs: [
         {
@@ -95,8 +95,8 @@ class App extends Component {
       method: "POST",
       headers: {
         Accept: "application/json",
-        // Authorization: "Key " + process.env.PAT,
-        Authorization: "Key " + this.state.PAT,
+        Authorization: "Key " + process.env.PAT,
+        // Authorization: "Key " + this.state.PAT,
       },
       body: raw,
     };
