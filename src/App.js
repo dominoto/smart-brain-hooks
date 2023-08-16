@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import ParticlesBg from "particles-bg";
-// import Clarifai from "clarifai";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import Navigation from "./components/Navigation/Navigation";
 import Signin from "./components/Signin/Signin";
@@ -23,32 +22,18 @@ const initialState = {
     entries: 0,
     joined: "",
   },
+  MODEL_ID: "face-detection",
+  MODEL_VERSION_ID: "6dc7e46bc9124c5c8824be4822abe105",
+  PAT: process.env.PAT,
+  USER_ID: process.env.USER_ID,
+  APP_ID: process.env.APP_ID,
 };
-
-// Your PAT (Personal Access Token) can be found in the portal under Authentification
-const PAT = process.env.PAT;
-// Specify the correct user_id/app_id pairings
-// Since you're making inferences outside your app's scope
-const USER_ID = process.env.USER_ID;
-const APP_ID = process.env.APP_ID;
-// Change these to whatever model and image URL you want to use
-const MODEL_ID = "face-detection";
-const MODEL_VERSION_ID = "6dc7e46bc9124c5c8824be4822abe105";
-// const IMAGE_URL = 'https://samples.clarifai.com/metro-north.jpg';
 
 class App extends Component {
   constructor() {
     super();
     this.state = initialState;
   }
-
-  ///////////////////////////////////////////////////////////////////////////////////
-  // YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
-  ///////////////////////////////////////////////////////////////////////////////////
-
-  // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
-  // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
-  // this will default to the latest version_id
 
   loadUser = (data) => {
     this.setState({
@@ -85,55 +70,47 @@ class App extends Component {
   };
 
   onButtonSubmit = () => {
-    this.setState({ imageUrl: this.state.input });
-    raw = JSON.stringify({
+    // this.setState({ imageUrl: this.state.input });
+
+    // Data for Clarifai REST endpoint
+    const raw = JSON.stringify({
       user_app_id: {
-        user_id: USER_ID,
-        app_id: APP_ID,
+        // user_id: process.env.USER_ID,
+        // app_id: process.env.APP_ID,
+        user_id: this.state.USER_ID,
+        app_id: this.state.APP_ID,
       },
       inputs: [
         {
           data: {
             image: {
-              url: this.state.imageUrl,
+              // url: this.state.imageUrl,
+              url: this.state.input,
             },
           },
         },
       ],
     });
-    requestOptions = {
+    const requestOptions = {
       method: "POST",
       headers: {
         Accept: "application/json",
-        Authorization: "Key " + PAT,
+        // Authorization: "Key " + process.env.PAT,
+        Authorization: "Key " + this.state.PAT,
       },
       body: raw,
     };
-    /* //fetch('http://localhost:3000/imageurl', {
-    // fetch('https://frosty-snow-9061.fly.dev/imageurl', {
-    fetch("https://smart-brain-api-x77e.onrender.com/imageurl", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        input: this.state.input,
-      }),
-    }) */
-    // Clarifai REST API call
+
+    // Fetch from Clarifai REST endpoint
     fetch(
-      "https://api.clarifai.com/v2/models/" +
-        MODEL_ID +
-        "/versions/" +
-        MODEL_VERSION_ID +
-        "/outputs",
+      "https://api.clarifai.com/v2/models/" + this.state.MODEL_ID + "/outputs",
       requestOptions
     )
-      // .then(response => response.text())
-      // .then(result => console.log(result))
-      // .catch(error => console.log('error', error))
       .then((response) => response.json())
       .then((response) => {
+        console.log(response);
+
         if (response) {
-          // fetch('https://frosty-snow-9061.fly.dev/image', {
           fetch("https://smart-brain-api-x77e.onrender.com/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },
@@ -141,11 +118,12 @@ class App extends Component {
               id: this.state.user.id,
             }),
           })
-            .then((response) => response.json())
+            .then((response) => {
+              response.json();
+            })
             .then((count) => {
               this.setState(Object.assign(this.state.user, { entries: count }));
-            })
-            .catch(console.log);
+            });
         }
         this.displayFaceBox(this.calculateFaceLocation(response));
       })
