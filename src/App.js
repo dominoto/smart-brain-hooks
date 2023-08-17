@@ -70,7 +70,7 @@ class App extends Component {
   };
 
   onButtonSubmit = () => {
-    // this.setState({ imageUrl: this.state.input });
+    this.setState({ imageUrl: this.state.input });
 
     // Data for Clarifai REST endpoint
     const raw = JSON.stringify({
