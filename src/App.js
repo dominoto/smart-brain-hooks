@@ -111,7 +111,8 @@ class App extends Component {
         console.log(response);
 
         if (response) {
-          fetch("https://smart-brain-api-x77e.onrender.com/image", {
+          // fetch("https://smart-brain-api-x77e.onrender.com/image", {
+          fetch("https://smart-brain-api.fly.dev/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
