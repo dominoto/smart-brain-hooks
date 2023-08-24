@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import ParticlesBg from "particles-bg";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import Navigation from "./components/Navigation/Navigation";
@@ -9,45 +9,51 @@ import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
 import Rank from "./components/Rank/Rank";
 import "./App.css";
 
-const initialState = {
-  input: "",
-  imageUrl: "",
-  box: {},
-  route: "signin",
-  isSignedIn: false,
-  user: {
+export default function App() {
+  const [input, setInput] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [box, setBox] = useState({});
+  const [route, setRoute] = useState("signin");
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [user, setUser] = useState({
     id: "",
     name: "",
     email: "",
     entries: 0,
     joined: "",
-  },
-  MODEL_ID: "face-detection",
-  MODEL_VERSION_ID: "6dc7e46bc9124c5c8824be4822abe105",
-  PAT: process.env.REACT_APP_PAT,
-  USER_ID: process.env.REACT_APP_USER_ID,
-  APP_ID: process.env.REACT_APP_APP_ID,
-};
+  });
+  const MODEL_ID = "face-detection";
+  const MODEL_VERSION_ID = "6dc7e46bc9124c5c8824be4822abe105";
+  const PAT = process.env.REACT_APP_PAT;
+  const USER_ID = process.env.REACT_APP_USER_ID;
+  const APP_ID = process.env.REACT_APP_APP_ID;
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = initialState;
-  }
-
-  loadUser = (data) => {
-    this.setState({
-      user: {
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        entries: data.entries,
-        joined: data.joined,
-      },
+  const loadUser = (data) => {
+    setUser({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined,
     });
   };
 
-  calculateFaceLocation = (data) => {
+  const logOffUser = () => {
+    setInput("");
+    setImageUrl("");
+    setBox({});
+    setRoute("signin");
+    setIsSignedIn(false);
+    setUser({
+      id: "",
+      name: "",
+      email: "",
+      entries: 0,
+      joined: "",
+    });
+  };
+
+  const calculateFaceLocation = (data) => {
     const clarifaiFace =
       data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById("inputimage");
@@ -61,31 +67,31 @@ class App extends Component {
     };
   };
 
-  displayFaceBox = (box) => {
-    this.setState({ box: box });
+  const displayFaceBox = (box) => {
+    setBox(box);
   };
 
-  onInputChange = (event) => {
-    this.setState({ input: event.target.value });
+  const onInputChange = (event) => {
+    setInput(event.target.value);
   };
 
-  onButtonSubmit = () => {
-    this.setState({ imageUrl: this.state.input });
+  const onButtonSubmit = () => {
+    setImageUrl(input);
 
     // Data for Clarifai REST endpoint
     const raw = JSON.stringify({
       user_app_id: {
         // user_id: process.env.USER_ID,
         // app_id: process.env.APP_ID,
-        user_id: this.state.USER_ID,
-        app_id: this.state.APP_ID,
+        user_id: USER_ID,
+        app_id: APP_ID,
       },
       inputs: [
         {
           data: {
             image: {
               // url: this.state.imageUrl,
-              url: this.state.input,
+              url: input,
             },
           },
         },
@@ -96,14 +102,14 @@ class App extends Component {
       headers: {
         Accept: "application/json",
         // Authorization: "Key " + process.env.PAT,
-        Authorization: "Key " + this.state.PAT,
+        Authorization: "Key " + PAT,
       },
       body: raw,
     };
 
     // Fetch from Clarifai REST endpoint
     fetch(
-      "https://api.clarifai.com/v2/models/" + this.state.MODEL_ID + "/outputs",
+      "https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs",
       requestOptions
     )
       .then((response) => response.json())
@@ -111,69 +117,54 @@ class App extends Component {
         console.log(response);
 
         if (response) {
-          // fetch("https://smart-brain-api-x77e.onrender.com/image", {
-          fetch("https://smart-brain-api.fly.dev/image", {
+          fetch("http://localhost:3001/image", {
+            // fetch("https://smart-brain-api.fly.dev/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              id: this.state.user.id,
+              id: user.id,
             }),
           })
-            .then((response) => {
-              response.json();
-            })
+            .then((response) => response.json())
             .then((count) => {
-              this.setState(Object.assign(this.state.user, { entries: count }));
+              setUser((prevState) => ({ ...prevState, entries: count }));
             });
         }
-        this.displayFaceBox(this.calculateFaceLocation(response));
+        displayFaceBox(calculateFaceLocation(response));
       })
       .catch((err) => console.log(err));
   };
 
-  onRouteChange = (route) => {
+  const onRouteChange = (route) => {
+    console.log("route", route);
     if (route === "signout") {
-      this.setState(initialState);
+      logOffUser();
     } else if (route === "home") {
-      this.setState({ isSignedIn: true });
+      setIsSignedIn(true);
     }
-    this.setState({ route: route });
+    setRoute(route);
+    console.log(user);
   };
 
-  render() {
-    const { isSignedIn, imageUrl, route, box } = this.state;
-
-    return (
-      <div className="App">
-        <ParticlesBg type="cobweb" bg={true} />
-        <Navigation
-          isSignedIn={isSignedIn}
-          onRouteChange={this.onRouteChange}
-        />
-        {route === "home" ? (
-          <div>
-            <Logo />
-            <Rank
-              name={this.state.user.name}
-              entries={this.state.user.entries}
-            />
-            <ImageLinkForm
-              onInputChange={this.onInputChange}
-              onButtonSubmit={this.onButtonSubmit}
-            />
-            <FaceRecognition box={box} imageUrl={imageUrl} />
-          </div>
-        ) : route === "signin" ? (
-          <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
-        ) : (
-          <Register
-            loadUser={this.loadUser}
-            onRouteChange={this.onRouteChange}
+  return (
+    <div className="App">
+      <ParticlesBg type="cobweb" bg={true} />
+      <Navigation isSignedIn={isSignedIn} onRouteChange={onRouteChange} />
+      {route === "home" ? (
+        <div>
+          <Logo />
+          <Rank name={user.name} entries={user.entries} />
+          <ImageLinkForm
+            onInputChange={onInputChange}
+            onButtonSubmit={onButtonSubmit}
           />
-        )}
-      </div>
-    );
-  }
+          <FaceRecognition box={box} imageUrl={imageUrl} />
+        </div>
+      ) : route === "signin" ? (
+        <Signin loadUser={loadUser} onRouteChange={onRouteChange} />
+      ) : (
+        <Register loadUser={loadUser} onRouteChange={onRouteChange} />
+      )}
+    </div>
+  );
 }
-
-export default App;
