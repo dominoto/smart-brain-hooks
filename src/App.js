@@ -12,7 +12,7 @@ import "./App.css";
 export default function App() {
   const [input, setInput] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [box, setBox] = useState({});
+  const [boxes, setBoxes] = useState([]);
   const [route, setRoute] = useState("signin");
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [user, setUser] = useState({
@@ -38,7 +38,7 @@ export default function App() {
   const logOffUser = () => {
     setInput("");
     setImageUrl("");
-    setBox({});
+    setBoxes([]);
     setRoute("signin");
     setIsSignedIn(false);
     setUser({
@@ -51,21 +51,26 @@ export default function App() {
   };
 
   const calculateFaceLocation = (data) => {
-    const clarifaiFace =
-      data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById("inputimage");
-    const width = Number(image.width);
-    const height = Number(image.height);
-    return {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - clarifaiFace.right_col * width,
-      bottomRow: height - clarifaiFace.bottom_row * height,
-    };
+    const facesArray = [];
+
+    data.outputs[0].data.regions.forEach((element) => {
+      const clarifaiFace = element.region_info.bounding_box;
+      const image = document.getElementById("inputimage");
+      const width = Number(image.width);
+      const height = Number(image.height);
+      const faceObject = {
+        leftCol: clarifaiFace.left_col * width,
+        topRow: clarifaiFace.top_row * height,
+        rightCol: width - clarifaiFace.right_col * width,
+        bottomRow: height - clarifaiFace.bottom_row * height,
+      };
+      facesArray.push(faceObject);
+    });
+    return facesArray;
   };
 
-  const displayFaceBox = (box) => {
-    setBox(box);
+  const displayFaceBox = (boxes) => {
+    setBoxes(boxes);
   };
 
   const onInputChange = (event) => {
@@ -73,6 +78,7 @@ export default function App() {
   };
 
   const onButtonSubmit = () => {
+    setBoxes([]);
     setImageUrl(input);
 
     // Data for Clarifai REST endpoint
@@ -147,7 +153,7 @@ export default function App() {
             onInputChange={onInputChange}
             onButtonSubmit={onButtonSubmit}
           />
-          <FaceRecognition box={box} imageUrl={imageUrl} />
+          <FaceRecognition boxes={boxes} imageUrl={imageUrl} />
         </div>
       ) : route === "signin" ? (
         <Signin loadUser={loadUser} onRouteChange={onRouteChange} />
