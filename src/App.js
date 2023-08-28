@@ -108,8 +108,6 @@ export default function App() {
     )
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
-
         if (response) {
           fetch(process.env.REACT_APP_API_LINK + "/image", {
             method: "put",
@@ -129,14 +127,12 @@ export default function App() {
   };
 
   const onRouteChange = (route) => {
-    console.log("route", route);
     if (route === "signout") {
       logOffUser();
     } else if (route === "home") {
       setIsSignedIn(true);
     }
     setRoute(route);
-    console.log(user);
   };
 
   return (
