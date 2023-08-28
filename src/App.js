@@ -24,9 +24,9 @@ export default function App() {
   });
   const MODEL_ID = "face-detection";
   const MODEL_VERSION_ID = "6dc7e46bc9124c5c8824be4822abe105";
-  const PAT = process.env.REACT_APP_PAT;
-  const USER_ID = process.env.REACT_APP_USER_ID;
-  const APP_ID = process.env.REACT_APP_APP_ID;
+  // const PAT = process.env.REACT_APP_PAT;
+  // const USER_ID = process.env.REACT_APP_USER_ID;
+  // const APP_ID = process.env.REACT_APP_APP_ID;
 
   const loadUser = (data) => {
     setUser({
@@ -81,10 +81,10 @@ export default function App() {
     // Data for Clarifai REST endpoint
     const raw = JSON.stringify({
       user_app_id: {
-        // user_id: process.env.USER_ID,
-        // app_id: process.env.APP_ID,
-        user_id: USER_ID,
-        app_id: APP_ID,
+        user_id: process.env.REACT_APP_USER_ID,
+        app_id: process.env.REACT_APP_APP_ID,
+        // user_id: USER_ID,
+        // app_id: APP_ID,
       },
       inputs: [
         {
@@ -101,8 +101,8 @@ export default function App() {
       method: "POST",
       headers: {
         Accept: "application/json",
-        // Authorization: "Key " + process.env.PAT,
-        Authorization: "Key " + PAT,
+        Authorization: "Key " + process.env.REACT_APP_PAT,
+        // Authorization: "Key " + PAT,
       },
       body: raw,
     };
@@ -117,7 +117,7 @@ export default function App() {
         console.log(response);
 
         if (response) {
-          fetch("http://localhost:3001/image", {
+          fetch(process.env.REACT_APP_API_LINK + "/image", {
             // fetch("https://smart-brain-api.fly.dev/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },

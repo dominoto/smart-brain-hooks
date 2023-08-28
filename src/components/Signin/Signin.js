@@ -14,7 +14,7 @@ export default function Signin({ loadUser, onRouteChange }) {
 
   const onSubmitSignIn = () => {
     // fetch('https://smart-brain-api.fly.dev/signin', {
-    fetch("http://localhost:3001/signin", {
+    fetch(process.env.REACT_APP_API_LINK + "/signin", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
