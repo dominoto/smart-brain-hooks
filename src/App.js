@@ -22,7 +22,6 @@ export default function App() {
     entries: 0,
     joined: "",
   });
-  const [faceCount, setFaceCount] = useState(0);
   const MODEL_ID = "face-detection";
   // const MODEL_VERSION_ID = "6dc7e46bc9124c5c8824be4822abe105";
 
@@ -49,7 +48,6 @@ export default function App() {
       entries: 0,
       joined: "",
     });
-    setFaceCount(0);
   };
 
   const calculateFaceLocation = (data) => {
@@ -68,7 +66,6 @@ export default function App() {
       };
       facesArray.push(faceObject);
     });
-    setFaceCount(facesArray.length);
     return facesArray;
   };
 
@@ -82,7 +79,6 @@ export default function App() {
 
   const onButtonSubmit = () => {
     setBoxes([]);
-    setFaceCount(0);
     setImageUrl(input);
 
     // Data for Clarifai REST endpoint
@@ -119,6 +115,7 @@ export default function App() {
       .then((response) => response.json())
       .then((response) => {
         if (response) {
+          const faceCount = response.outputs[0].data.regions.length;
           fetch(process.env.REACT_APP_API_LINK + "/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },
