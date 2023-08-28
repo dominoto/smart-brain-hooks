@@ -1,5 +1,5 @@
 {
-  "name": "facerecognitionbrain",
+  "name": "smart-brain-hooks",
   "version": "0.1.0",
   "engines": {
     "node": "18.11.0",
@@ -7,7 +7,6 @@
   },
   "private": true,
   "dependencies": {
-    "clarifai": "^2.9.1",
     "particles-bg": "^2.5.5",
     "react": "^18.x",
     "react-dom": "^18.x",
@@ -35,6 +34,5 @@
     ]
   },
   "devDependencies": {
-    "@flydotio/dockerfile": "^0.2.5"
   }
 }
