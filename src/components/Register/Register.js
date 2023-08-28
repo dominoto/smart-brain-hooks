@@ -19,7 +19,6 @@ export default function Register({ loadUser, onRouteChange }) {
 
   const onSubmitSignIn = () => {
     fetch(process.env.REACT_APP_API_LINK + "/register", {
-      // fetch('https://smart-brain-api.fly.dev/register', {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
